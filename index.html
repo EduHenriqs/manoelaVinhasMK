@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manoela Vinhas | MK </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5eadb;
+            color: #2b2b2b;
+            overflow-x: hidden;
+        }
+
+        .serif-font {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Transições de Hover nos Cards */
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(125, 40, 59, 0.15);
+        }
+
+        .card-hover:active {
+            transform: scale(0.98);
+        }
+
+        /* Perspectiva e Palco 3D para o Carrossel Rotativo (Seção 3) */
+        .perspective-container {
+            perspective: 1000px;
+        }
+
+        .carousel-3d-stage {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .testimonial-card-3d {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 90%;
+            max-width: 420px;
+            height: 320px;
+            margin-left: -45%;
+            backface-visibility: hidden;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            border-radius: 1.25rem;
+        }
+
+        @media (min-width: 640px) {
+            .testimonial-card-3d {
+                width: 420px;
+                margin-left: -210px;
+            }
+        }
+
+        .bento-gallery-section {
+            background-color: #f5eadb;
+            padding: 60px 20px;
+            color: #7d283b;
+            font-family: inherit;
+        }
+
+        .bento-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .bento-title {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            color: #7d283b;
+        }
+
+        .bento-subtitle {
+            font-size: 1rem;
+            color: #b08481;
+            margin-bottom: 35px;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-auto-rows: 220px;
+            gap: 16px;
+        }
+
+        .bento-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(125, 40, 59, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: #eaecef;
+        }
+
+        .bento-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(125, 40, 59, 0.15);
+        }
+
+        /* Tamanhos dinâmicos para o Bento Grid */
+        .bento-item.bento-large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .bento-item.bento-small {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+
+        .bento-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .bento-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .bento-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(125, 40, 59, 0.85), transparent);
+            padding: 20px 15px 15px;
+            color: #f5eadb;
+            text-align: left;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .bento-item:hover .bento-overlay {
+            opacity: 1;
+        }
+
+        .bento-overlay span {
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        /* Lightbox Styles */
+        .bento-lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .bento-lightbox img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 8px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+            animation: zoomIn 0.3s ease;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            color: #f5eadb;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Responsivo para celulares menores */
+        @media (max-width: 600px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+                grid-auto-rows: 200px;
+            }
+
+            .bento-item.bento-large {
+                grid-column: span 1;
+                grid-row: span 2;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-[#f5eadb] text-[#2b2b2b] antialiased">
+    <section
+        class="min-h-screen py-10 px-4 sm:px-6 flex flex-col items-center justify-center max-w-md md:max-w-xl mx-auto">
+
+        <div class="relative mb-6">
+            <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-full overflow-hidden border-4 border-[#b08481] shadow-lg">
+                <img src="images/2.jpeg" alt="Manoela Vinhas" class="w-full h-full object-cover">
+            </div>
+        </div>
+
+        <h1 class="serif-font text-3xl sm:text-4xl font-bold tracking-wide text-[#7d283b] text-center mb-2">
+            Manoela Vinhas
+        </h1>
+
+        <div class="flex flex-wrap justify-center gap-2 mb-4">
+            <span
+                class="px-3.5 py-1 bg-[#eaecef] text-[#7d283b] text-xs font-semibold rounded-full tracking-wider border border-[#b08481]/30">Maquiagem
+                Express</span>
+            <span
+                class="px-3.5 py-1 bg-[#eaecef] text-[#7d283b] text-xs font-semibold rounded-full tracking-wider border border-[#b08481]/30">Maquiagem
+                Social</span>
+            <span
+                class="px-3.5 py-1 bg-[#eaecef] text-[#7d283b] text-xs font-semibold rounded-full tracking-wider border border-[#b08481]/30">Curso
+                de Automaquiagem</span>
+            <span
+                class="px-3.5 py-1 bg-[#eaecef] text-[#7d283b] text-xs font-semibold rounded-full tracking-wider border border-[#b08481]/30">Curso
+                de maquiagem em dupla</span>
+        </div>
+
+
+        <div class="w-full flex flex-col gap-3.5">
+
+            <a href="https://wa.me/5554997011310?text=Ol%C3%A1%21%20Quero%20agendar%20minha%20maquiagem%20%F0%9F%92%84"
+                class="card-hover flex items-center justify-between p-4 bg-[#b08481] text-[#f5eadb] rounded-2xl shadow-md group">
+                <div class="flex items-center gap-3.5">
+                    <div
+                        class="w-11 h-11 rounded-full bg-[#7d283b] flex items-center justify-center text-[#f5eadb] shadow-inner">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-sm sm:text-base text-[#f5eadb]">Marque sua maquiagem</h3>
+                        <p class="text-xs text-[#f5eadb]/90">Me envie uma mensagem por aqui</p>
+                    </div>
+                </div>
+                <div class="text-[#f5eadb] group-hover:translate-x-1 transition-transform">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </div>
+            </a>
+
+            <a href="files/folder.pdf"
+                class="card-hover flex items-center justify-between p-4 bg-[#eaecef] rounded-2xl border border-[#b08481]/20 group" target="_blank">
+                <div class="flex items-center gap-3.5">
+                    <div
+                        class="w-11 h-11 rounded-full bg-[#f5eadb] flex items-center justify-center text-[#7d283b] shadow-sm">
+                        <i class="fa-solid fa-book-open text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-sm sm:text-base text-[#7d283b]">Meu catálogo </h3>
+                        <p class="text-xs text-gray-600">Conheça meus serviços.</p>
+                    </div>
+                </div>
+                <div class="text-[#b08481] group-hover:translate-x-1 transition-transform">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </div>
+            </a>
+
+
+            <a href="https://www.instagram.com/manuvinhasmk/"
+                class="card-hover flex items-center justify-between p-4 bg-[#eaecef] rounded-2xl border border-[#b08481]/20 group" target="_blank">
+                <div class="flex items-center gap-3.5">
+                    <div
+                        class="w-11 h-11 rounded-full bg-[#f5eadb] flex items-center justify-center text-[#7d283b] shadow-sm">
+                        <i class="fa-brands fa-instagram text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-sm sm:text-base text-[#7d283b]">Instagram</h3>
+                        <p class="text-xs text-gray-600">Acompanhe um pouco mais sobre mim</p>
+                    </div>
+                </div>
+                <div class="text-[#b08481] group-hover:translate-x-1 transition-transform">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </div>
+            </a>
+
+            <a href="#testimonials"
+                class="card-hover flex items-center justify-between p-4 bg-[#eaecef] rounded-2xl border border-[#b08481]/20 group">
+                <div class="flex items-center gap-3.5">
+                    <div
+                        class="w-11 h-11 rounded-full bg-[#f5eadb] flex items-center justify-center text-[#7d283b] shadow-sm">
+                        <i class="fa-solid fa-comments text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-sm sm:text-base text-[#7d283b]">Feedbacks</h3>
+                        <p class="text-xs text-gray-600">Veja o relato de outras clientes</p>
+                    </div>
+                </div>
+                <div class="text-[#b08481] group-hover:translate-x-1 transition-transform">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </div>
+            </a>
+
+            <a href="#galerry"
+                class="card-hover flex items-center justify-between p-4 bg-[#eaecef] rounded-2xl border border-[#b08481]/20 group">
+                <div class="flex items-center gap-3.5">
+                    <div
+                        class="w-11 h-11 rounded-full bg-[#f5eadb] flex items-center justify-center text-[#7d283b] shadow-sm">
+                        <i class="fa-solid fa-image text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-sm sm:text-base text-[#7d283b]">Alguns Trabalhos</h3>
+                        <p class="text-xs text-gray-600">Os resultados finais de algumas makes</p>
+                    </div>
+                </div>
+                <div class="text-[#b08481] group-hover:translate-x-1 transition-transform">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </div>
+            </a>
+
+        </div>
+
+
+        <div class="flex items-center  text-xs text-[#7d283b]/70 mt-8 font-medium">
+            <i class="fa-solid fa-location-dot text-[#b08481]"></i>
+            <span>Erechim, RS</span>
+        </div>
+
+    </section>
+
+    <section id="about" class="bg-[#7d283b] text-[#f5eadb] py-16 px-6 sm:px-12 relative overflow-hidden">
+        <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
+            <div class="flex flex-col justify-center">
+                <h2 class="serif-font text-3xl sm:text-5xl font-bold tracking-tight mb-6 text-[#f5eadb]">
+                    Conheçam a Manoela.
+                </h2>
+
+                <div class="space-y-4 text-sm sm:text-base text-[#f5eadb]/90 leading-relaxed font-light">
+                    <p>
+                        Me chamo Manoela, sou apaixonada pela arte da maquiagem! Acredito no poder dos pincéis e dos
+                        produtos de beleza para realçar aquilo que já existe de mais bonito em você, busco valorizar
+                        seus traços e sua essência sem fazer com que você deixe de se reconhecer no espelho.
+                    </p>
+                    <p>
+                        Minha trajetória começou aos 16 anos, quando me maquiava no meu quarto durante a pandemia e aos
+                        19 comecei a de fato atuar profissionalmente, transformando esse amor em profissão.
+                    <p>
+                        Sou uma profissional que esta sempre em busca de coisas novas para aprender. Por isso, busco me
+                        atualizar, aprimorar minhas técnicas e oferecer uma experiência cada vez melhor para cada pessoa
+                        que confia no meu trabalho.
+                    </p>
+
+                    <p>
+                        Se você está aqui, sinta-se bem-vinda! Saiba que estará nas mãos de uma profissional apaixonada
+                        e dedicada, que fará de tudo para deixar o seu dia ainda mais especial.
+                    </p>
+
+                </div>
+                <div class="mt-8">
+                    <a href="https://wa.me/5554997011310?text=Ol%C3%A1%21%20Quero%20agendar%20minha%20maquiagem%20%F0%9F%92%84"
+                        target="_blank"
+                        class="inline-block bg-[#b08481] text-[#f5eadb] font-semibold text-xs sm:text-sm uppercase tracking-widest py-4 px-8 rounded-xl shadow-lg hover:bg-[#b08481]/90 transition-all text-center">
+                        CLIQUE AQUI E AGENDE SEU HORÁRIO OU CURSO
+                    </a>
+                </div>
+            </div>
+            <div class="relative flex flex-col items-center">
+                <div
+                    class="w-full max-w-sm h-[420px] sm:h-[480px] rounded-2xl overflow-hidden shadow-2xl border border-[#b08481]/30 relative bg-[#2b2b2b]">
+
+                    <div
+                        class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-100 flex items-center justify-center">
+                        <img src="images/1.jpeg" class="w-full h-full object-cover">
+
+                    </div>
+
+                    <div
+                        class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-0 flex items-center justify-center">
+                        <img src="images/3.jpeg" class="w-full h-full object-cover">
+
+                    </div>
+
+                    <div
+                        class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-0 flex items-center justify-center">
+                        <img src="images/4.jpeg" class="w-full h-full object-cover">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section id="testimonials" class="py-16 px-4 sm:px-8 bg-[#eaecef] text-[#2b2b2b] overflow-hidden">
+        <div class="max-w-5xl mx-auto">
+
+            <div class="text-center mb-10">
+                <span class="text-xs uppercase tracking-widest font-semibold text-[#b08481]">Relatos & Avaliações</span>
+                <h2 class="serif-font text-3xl sm:text-5xl font-bold text-[#7d283b] mt-1">O que dizem as clientes
+                </h2>
+                <p class="text-xs sm:text-sm text-gray-600 mt-2">Gire os relatos e veja como ressaltar momentos
+                    especiais</p>
+            </div>
+
+            <!-- Contêiner com Perspectiva 3D -->
+            <div class="perspective-container relative py-4">
+
+                <div id="carousel3DStage" class="carousel-3d-stage">
+
+                    <!-- Relato 1 -->
+                    <div
+                        class="testimonial-card-3d bg-[#f5eadb] p-6 sm:p-8 shadow-xl border border-[#b08481]/30 flex flex-col justify-between">
+                        <div>
+                            <p class="serif-font text-base sm:text-lg italic text-[#2b2b2b] leading-relaxed">
+                                “Queria agradecer de coração pelo trabalho incrível que você fez na minha maquiagem de
+                                formatura!
+                                Você conseguiu realçar exatamente o que eu imaginava, e me senti linda, confiante e
+                                muito especial em um dos dias mais importantes da minha vida. A maquiagem ficou
+                                impecável do início ao fim, e recebi muitos elogios durante a noite. Com certeza vou
+                                indicar o seu trabalho e voltar outras vezes!”
+                            </p>
+                        </div>
+                        <div
+                            class="pt-3 border-t border-[#b08481]/20 flex justify-between items-center text-xs text-[#7d283b]/70 font-medium">
+                            <span>Formanda</span>
+                            <span>Erechim - RS</span>
+                        </div>
+                    </div>
+
+                    <!-- Relato 2 -->
+                    <div
+                        class="testimonial-card-3d bg-[#f5eadb] p-6 sm:p-8 shadow-xl border border-[#b08481]/30 flex flex-col justify-between">
+                        <div>
+                            <p class="serif-font text-base sm:text-lg italic text-[#2b2b2b] leading-relaxed">
+                                “Manuuu, meu feedback da make: simplesmente NADA fora do lugar o dia todooo e olha que
+                                eu aproveitei dmssss
+                                sério, fico sem palavras pra durabilidade que tu entrega!
+                                eu amei o resultadoooo, tu conseguiu fazer exatamente o que eu imaginava sabe??
+                                tava me sentindo muito linda hoje o dia todooo, sério! obrigada de coração.”
+                            </p>
+                        </div>
+                        <div
+                            class="pt-3 border-t border-[#b08481]/20 flex justify-between items-center text-xs text-[#7d283b]/70 font-medium">
+                            <span>Ensaio de fotos de terceirão</span>
+                            <span>Erechim - RS</span>
+                        </div>
+                    </div>
+
+                    <!-- Relato 3 -->
+                    <div
+                        class="testimonial-card-3d bg-[#f5eadb] p-6 sm:p-8 shadow-xl border border-[#b08481]/30 flex flex-col justify-between">
+                        <div>
+                            <p class="serif-font text-base sm:text-lg italic text-[#2b2b2b] leading-relaxed">
+                                “Jesus cheguei a mudar de cpf !
+                                Te falar que fui na feira, e meu deus ninguém me reconheceu haha.
+                                E outro ponto, nossa nem sinto que to maquiada, juro, nenhuma sensação de desconforto”
+                            </p>
+                        </div>
+                        <div
+                            class="pt-3 border-t border-[#b08481]/20 flex justify-between items-center text-xs text-[#7d283b]/70 font-medium">
+                            <span>Maquiagem social</span>
+                            <span>Erechim - RS</span>
+                        </div>
+                    </div>
+
+                    <!-- Relato 4 -->
+                    <div
+                        class="testimonial-card-3d bg-[#f5eadb] p-6 sm:p-8 shadow-xl border border-[#b08481]/30 flex flex-col justify-between">
+                        <div>
+                            <p class="serif-font text-base sm:text-lg italic text-[#2b2b2b] leading-relaxed">
+                                “Eu amei a make estava sofrendo quando cheguei em casa pq não queria tirar kkkkkkk
+                                A pele ficou perfeita! Como eu já te disse, foi a primeira vez que acertaram o tom da
+                                minha pele de primeira
+                                Obrigada”
+                            </p>
+                        </div>
+                        <div
+                            class="pt-3 border-t border-[#b08481]/20 flex justify-between items-center text-xs text-[#7d283b]/70 font-medium">
+                            <span>Maquiagem Express</span>
+                            <span>Erechim - RS</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Botões de Controle do Carrossel 3D -->
+                <div class="flex justify-center items-center gap-6 mt-4">
+                    <button onclick="rotate3DPrev()"
+                        class="w-12 h-12 rounded-full bg-[#7d283b] text-[#f5eadb] hover:bg-[#b08481] transition-all shadow-md flex items-center justify-center text-base">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+
+                    <div id="dots3DContainer" class="flex gap-2">
+                        <!-- Pontos serão ativados via JavaScript -->
+                    </div>
+
+                    <button onclick="rotate3DNext()"
+                        class="w-12 h-12 rounded-full bg-[#7d283b] text-[#f5eadb] hover:bg-[#b08481] transition-all shadow-md flex items-center justify-center text-base">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section class="bento-gallery-section" id="galerry">
+        <div class="bento-container">
+            <h2 class="bento-title">Destaques</h2>
+            <p class="bento-subtitle">Clique em qualquer foto para ampliar</p>
+
+            <div class="bento-grid">
+                <!-- Item Grande 1 -->
+                <div class="bento-item bento-large" onclick="openLightbox(this)">
+                    <img src="images/mk_1.jpeg">
+                    <div class="bento-overlay"><span></span></div>
+                </div>
+
+                <!-- Item Pequeno 1 -->
+                <div class="bento-item bento-small" onclick="openLightbox(this)">
+                    <img src="images/mk_2.jpeg">
+                    <div class="bento-overlay"><span></span></div>
+                </div>
+
+                <!-- Item Pequeno 2 -->
+                <div class="bento-item bento-small" onclick="openLightbox(this)">
+                    <img src="images/mk_3.jpeg">
+                    <div class="bento-overlay"><span></span></div>
+                </div>
+
+                <!-- Item Grande 2 -->
+                <div class="bento-item bento-large" onclick="openLightbox(this)">
+                    <img src="images/mk_4.jpeg">
+                    <div class="bento-overlay"><span></span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Lightbox -->
+        <div id="bentoLightbox" class="bento-lightbox" onclick="closeLightbox()">
+            <span class="lightbox-close">&times;</span>
+            <img id="lightboxImg" src="" alt="Foto Ampliada">
+        </div>
+    </section>
+
+    <!-- Rodapé Minimalista -->
+    <footer class="bg-[#7d283b] text-[#f5eadb] py-8 text-center text-xs tracking-wider border-t border-[#b08481]/30">
+        <p>&copy; 2026 Manoela Vinhas MK. Todos os direitos reservados.</p>
+        <p class="mt-1 text-[#f5eadb]/70">Erechim, Rio Grande do Sul.</p>
+    </footer>
+
+    <script>
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.carousel-dot');
+        let slideInterval;
+
+        function showSlide(n) {
+            slideIndex = (n + slides.length) % slides.length;
+
+            slides.forEach((slide, index) => {
+                slide.style.opacity = index === slideIndex ? '1' : '0';
+            });
+
+            dots.forEach((dot, index) => {
+                dot.style.backgroundColor = index === slideIndex ? '#f5eadb' : 'rgba(245, 234, 219, 0.4)';
+            });
+        }
+
+        function nextSlide() {
+            showSlide(slideIndex + 1);
+            resetTimer();
+        }
+
+        function prevSlide() {
+            showSlide(slideIndex - 1);
+            resetTimer();
+        }
+
+        function currentSlide(n) {
+            showSlide(n);
+            resetTimer();
+        }
+
+        function startTimer() {
+            slideInterval = setInterval(() => {
+                showSlide(slideIndex + 1);
+            }, 4500); // Altera a cada 4.5 segundos
+        }
+
+        function resetTimer() {
+            clearInterval(slideInterval);
+            startTimer();
+        }
+
+        // Inicia o carrossel automático ao carregar a página
+        window.onload = function () {
+            startTimer();
+            update3DCarousel();
+            start3DTimer();
+        };
+
+        let active3DIndex = 0;
+        const cards3D = document.querySelectorAll('.testimonial-card-3d');
+        const total3DCards = cards3D.length;
+        const dots3DContainer = document.getElementById('dots3DContainer');
+        let autoRotate3DTimer;
+
+        // Cria os pontos seletores dinamicamente
+        for (let i = 0; i < total3DCards; i++) {
+            const dot = document.createElement('button');
+            dot.className = `w-3 h-3 rounded-full transition-all ${i === 0 ? 'bg-[#7d283b] w-6' : 'bg-[#b08481]/40'}`;
+            dot.onclick = () => goTo3DIndex(i);
+            dots3DContainer.appendChild(dot);
+        }
+
+        function update3DCarousel() {
+            cards3D.forEach((card, i) => {
+                // Calcula a distância relativa do card ativo
+                let diff = i - active3DIndex;
+
+                if (diff < -Math.floor(total3DCards / 2)) {
+                    diff += total3DCards;
+                } else if (diff > Math.floor(total3DCards / 2)) {
+                    diff -= total3DCards;
+                }
+
+                // Cálculo da rotação no eixo Y e translação Z (profundidade)
+                const rotateY = diff * 45; // Ângulo de rotação
+                const translateX = diff * 120; // Espaçamento lateral nas telas maiores
+                const translateZ = -Math.abs(diff) * 180; // Recuo 3D
+                const opacity = diff === 0 ? 1 : Math.abs(diff) === 1 ? 0.6 : 0; // Transparência
+                const zIndex = 10 - Math.abs(diff);
+
+                card.style.transform = `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg)`;
+                card.style.opacity = opacity;
+                card.style.zIndex = zIndex;
+                card.style.pointerEvents = diff === 0 ? 'auto' : 'none';
+            });
+
+            // Atualiza os indicadores (dots)
+            const dots = dots3DContainer.querySelectorAll('button');
+            dots.forEach((dot, i) => {
+                if (i === active3DIndex) {
+                    dot.className = 'w-6 h-3 rounded-full bg-[#7d283b] transition-all';
+                } else {
+                    dot.className = 'w-3 h-3 rounded-full bg-[#b08481]/40 transition-all';
+                }
+            });
+        }
+
+        function rotate3DNext() {
+            active3DIndex = (active3DIndex + 1) % total3DCards;
+            update3DCarousel();
+            reset3DTimer();
+        }
+
+        function rotate3DPrev() {
+            active3DIndex = (active3DIndex - 1 + total3DCards) % total3DCards;
+            update3DCarousel();
+            reset3DTimer();
+        }
+
+        function goTo3DIndex(index) {
+            active3DIndex = index;
+            update3DCarousel();
+            reset3DTimer();
+        }
+
+        function start3DTimer() {
+            autoRotate3DTimer = setInterval(() => {
+                rotate3DNext();
+            }, 5000); // Gira a cada 5 segundos
+        }
+
+        function reset3DTimer() {
+            clearInterval(autoRotate3DTimer);
+            start3DTimer();
+        }
+
+        // Suporte a gestos Touch (Swipe) no Carrossel 3D para celulares
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const stage3D = document.getElementById('carousel3DStage');
+
+        stage3D.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        stage3D.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, {passive: true});
+
+        function handleSwipe() {
+            const swipeThreshold = 40;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                rotate3DNext();
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                rotate3DPrev();
+            }
+        }
+
+        function openLightbox(element) {
+            const lightbox = document.getElementById('bentoLightbox');
+            const lightboxImg = document.getElementById('lightboxImg');
+            const img = element.querySelector('img');
+
+            lightboxImg.src = img.src;
+            lightbox.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('bentoLightbox').style.display = 'none';
+        }        
+    </script>
+
+</body>
+
+</html>
